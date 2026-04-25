@@ -98,7 +98,7 @@ Go to **Payment Methods → Add → Stripe** and fill in:
 | **Label** | Internal name, e.g. `Stripe USD` |
 | **Secret key** | `sk_live_...` |
 | **Publishable key** | `pk_live_...` |
-| **Webhook secret** | `whsec_...` — optional but strongly recommended |
+| **Webhook secret** | `whsec_...` — **required** |
 | **Settlement currency** | Only if your Stripe account settles in a different currency |
 
 **Country policy (optional):** restrict which countries can use this account.
@@ -117,7 +117,7 @@ Go to **Payment Methods → Add → PayPal** and fill in:
 | **Label** | Internal name, e.g. `PayPal USD` |
 | **Client ID** | From your PayPal app |
 | **Client Secret** | From your PayPal app |
-| **Webhook ID** | Optional but recommended |
+| **Webhook ID** | **Required** |
 
 ---
 

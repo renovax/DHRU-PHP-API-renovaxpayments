@@ -99,7 +99,7 @@ Ve a **Payment Methods → Add → Stripe** y completa:
 | **Label** | Nombre interno, p. ej. `Stripe USD` |
 | **Secret key** | `sk_live_...` |
 | **Publishable key** | `pk_live_...` |
-| **Webhook secret** | `whsec_...` — opcional pero muy recomendado |
+| **Webhook secret** | `whsec_...` — **obligatorio** |
 | **Settlement currency** | Solo si tu cuenta Stripe liquida en una moneda diferente |
 
 **Política de países (opcional):** restringe qué países pueden usar esta cuenta.
@@ -118,7 +118,7 @@ Ve a **Payment Methods → Add → PayPal** y completa:
 | **Label** | Nombre interno, p. ej. `PayPal USD` |
 | **Client ID** | De tu aplicación PayPal |
 | **Client Secret** | De tu aplicación PayPal |
-| **Webhook ID** | Opcional pero recomendado |
+| **Webhook ID** | **Obligatorio** |
 
 ---
 
