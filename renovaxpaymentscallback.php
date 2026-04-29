@@ -254,8 +254,12 @@ function rnx_get_dhru_invoice($order_id)
 function rnx_txid_exists($transid)
 {
     if ($transid === '' || $transid === null) return false;
-    $safe   = addslashes($transid);
-    $result = dquery("SELECT `id` FROM `tbl_transaction` WHERE `transid` = '{$safe}' LIMIT 1");
+    // Reject anything outside the strict tx-hash charset (alnum + - _ . :).
+    // Prevents SQL injection since dquery() lacks prepared-statement support.
+    if (!preg_match('/^[A-Za-z0-9_\-\.:]{1,128}$/', (string) $transid)) {
+        return false;
+    }
+    $result = dquery("SELECT `id` FROM `tbl_transaction` WHERE `transid` = '{$transid}' LIMIT 1");
     if (!$result) return false;
     return mysqli_num_rows($result) > 0;
 }
@@ -271,7 +275,10 @@ function rnx_rewrite_invoice_from_net($invoiceid, $subtotal, $tax, $total, $note
     $sub   = number_format(floatval($subtotal), 3, '.', '');
     $tx    = number_format(floatval($tax),      3, '.', '');
     $tot   = number_format(floatval($total),    3, '.', '');
-    $nSafe = addslashes((string) $note);
+    // Strip quotes/backslashes/control chars from the audit note. dquery()
+    // lacks prepared statements and addslashes() is unsafe under non-utf8
+    // multi-byte charsets, so we sanitize to a SQL-safe printable subset.
+    $nSafe = preg_replace('/[\x00-\x1F\x7F\'"\\\\]/', ' ', (string) $note);
 
     dquery(
         "UPDATE `tbl_invoices` "

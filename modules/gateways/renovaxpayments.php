@@ -50,6 +50,13 @@ function renovaxpayments_config()
             'Value'       => '15',
             'Description' => 'How many minutes the invoice stays valid before expiring if the customer does not pay. Recommended: 15 — enough for the customer to open their wallet and confirm on-chain without losing the price.',
         ),
+        'fiat_enabled' => array(
+            'Name'        => 'Allow fiat methods',
+            'Type'        => 'dropdown',
+            'Options'     => 'on,off',
+            'Value'       => 'on',
+            'Description' => 'When set to "on", the RENOVAX checkout shows every payment method the merchant has enabled (crypto + Stripe / PayPal / Pix / MercadoPago / EnZona / Transfermovil). Set it to "off" to force crypto-only checkout for invoices generated from this DHRU instance — useful when serving trusted/B2B clients where you only want to accept stablecoins.',
+        ),
     );
 }
 
@@ -88,6 +95,7 @@ function renovaxpayments_link($params)
     $apiBase     = rtrim(($params['api_base_url'] ?? '') ?: 'https://payments.renovax.net', '/');
     $token       = trim($params['bearer_token'] ?? '');
     $ttl         = (int) (($params['invoice_ttl_minutes'] ?? '') ?: 15);
+    $fiatEnabled = strtolower(trim($params['fiat_enabled'] ?? 'on')) !== 'off';
     $systemUrl   = rtrim($params['systemurl'] ?? '', '/') . '/';
     $invoiceId   = $params['invoiceid'] ?? '';
     $amount      = $params['amount'] ?? 0;
@@ -131,6 +139,7 @@ function renovaxpayments_link($params)
         'success_url'        => $viewInvoiceUrl,
         'cancel_url'         => $viewInvoiceUrl,
         'expires_in_minutes' => $ttl,
+        'fiat_enabled'       => $fiatEnabled,
         'metadata'           => array(
             'dhru_invoiceid' => (string) $invoiceId,
             'dhru_email'     => $clientEmail,
